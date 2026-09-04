@@ -1,0 +1,11 @@
+{
+  "name": "relata",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Relational Engagement Laboratory — closed theory spine and Experiment Zero",
+  "scripts": {
+    "experiment": "node --experimental-strip-types experiments/run-zero.ts"
+  },
+  "license": "MIT"
+}
