@@ -8,6 +8,8 @@ Closed theory spine of the engagement-first hypothesis, from joint-history const
 
 This is a research architecture and a finite laboratory — not a derivation of Einstein’s equations, and not established physics.
 
+**Scope.** RELATA is an independent physics research lab. It is not part of AuthorityOS, not a module of that system, and not a governance or legal-infrastructure product.
+
 ## Hypothesis
 
 Physical systems are defined by evolving channels of mutual constraint on joint histories. Spatial distance, geometry, and force are effective descriptions of the large-scale organization of those relations. What observers call gravitational attraction may be the geometric appearance of a universal, sign-definite sector of relational engagement.

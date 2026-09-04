@@ -2,7 +2,7 @@
 
 A closed derivation architecture for the hypothesis that engagement is primitive and that distance, attraction, and geometry are derived descriptions.
 
-This document is a working theory, not a paper claiming Einstein’s equations, and not established physics. Its contribution is methodological: it converts an ontological inversion into a sequence of gates a model can fail.
+This document is a working theory, not a paper claiming Einstein’s equations, and not established physics. Its contribution is methodological: it converts an ontological inversion into a sequence of gates a model can fail. RELATA is an independent laboratory; it is not part of AuthorityOS.
 
 ---
 
