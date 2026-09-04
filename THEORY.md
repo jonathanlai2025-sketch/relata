@@ -218,30 +218,26 @@ First-arrival, recorded only as a later reconstruction candidate:
 
 ## Layer 3 — Experiment Zero
 
+The frozen protocol is [EXPERIMENT_ZERO.md](./EXPERIMENT_ZERO.md). The implemented substrate is `experiments/experiment_zero.py`.
+
 **Objective.** Determine whether a permutation-invariant, unembedded constraint dynamics has a stable finite-dimensional local phase.
 
 Not: derive gravity. Not: prove space is information. Not: show that mutual information contracts distance.
 
-| Gate | Observable | Pass | Halt |
-|---|---|---|---|
-| 0.0 Connectedness | Giant component \(f_{\mathrm{giant}}\) | \(f_{\mathrm{giant}}\to 1\) | Fragmentation |
-| 0.1 Probe invariance | Neighborhood overlap across probes | High median overlap | “Near” depends on probe |
-| 0.2 Persistence | Time-window overlap | Slow vs micro-updates | Scramble on update scale |
-| 0.3 Finite dimension | \(V(\tau)\sim\tau^{D_H}\) and \(d_s\) | Stable finite \(D_H,d_s\) | \(V\sim e^{\lambda\tau}\) |
-| 0.4 Metric consistency | Triangle residuals of first-arrival | Median \(\Delta\to 0\) in IR | Order-one nonmetricity |
-| 0.5 Non-degeneracy | Degree, clustering, bottlenecks | Neither complete nor chain | Expander, dust, 1-chain |
+| Gate | Pass | Fail |
+|---|---|---|
+| G1 Connectedness | Giant component \(\ge 80\%\) | Fragmented or empty |
+| G2 Probe invariance | Neighborhoods from \(M\), no chart | Neighborhoods exist only after an embedding |
+| G3 Persistence | Jaccard overlap after burn-in | Topology scrambles; or estimator too noisy |
+| G4 Finite-dimensional growth | \(n(r)\) closer to polynomial than exponential | Expander / log-diameter |
+| G5 Approximate metricity | Triangle holds on a large fraction of triples | Distance-like reading inconsistent |
+| G6 Non-degeneracy | Mean degree in \((k_{\min},k_{\max})\) | Complete (mean-field) or empty |
 
-Two dimension estimators. Influence-ball growth \(V_i(\tau)=|N_\varepsilon(i;\tau)|\sim\tau^{D_H}\). Spectral dimension \(d_s=-2\,\mathrm{d}\ln P_{\mathrm{return}}(\sigma)/\mathrm{d}\ln\sigma\). A continuum phase is credible only if both plateau on \(1\ll\tau,\sigma\ll\tau_{\mathrm{finite}}(N)\). **Do not impose \(D_H=3\) or \(d_s=4\) in Experiment Zero.**
+Do not fit \(d_s=4\).
 
-**Endpoint.** Given no metric coordinates or background geometry, a specified relational constraint-and-update system enters — or fails to enter — a connected, persistent, finite-dimensional, approximately metric operational phase.
+**First-run result (not a discovery).** On the present tiny substrate (N=28, noisy intervention estimator), **no ensemble passed Experiment Zero**. Persistence failed on a *static* control, so \(M\) is still too noisy to trust neighborhood overlap. Adaptive Hebb + capacity did not produce a sparse, stable operational geometry distinct from the controls. Do not narrate it as emergent nearness.
 
-A pass does not demonstrate that spacetime or gravity has been derived. It earns the next question: can that phase support a universal causal cone and effective fields?
-
-The laboratory implements three ensembles:
-
-1. **Random 3-XORSAT** — negative control. Expected expander / small-world.
-2. **Hidden 2-torus** — oracle control. Clauses generated from a secret 2-lattice, coordinates discarded. If diagnostics cannot recover \(D_H\approx 2\), the gates are broken.
-3. **Overlap pressure** — constructive postulate. Metric-free rewiring toward high neighborhood overlap and away from low-context shortcuts.
+That is a NO for this update class and this estimator, not a NO for the research question.
 
 ---
 

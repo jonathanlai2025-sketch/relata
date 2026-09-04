@@ -18,12 +18,12 @@ export type Layer = {
 };
 
 export const HYPOTHESIS = {
-  title: "Relational Engagement Hypothesis",
+  title: "Relational-Geometry Hypothesis",
   boxed:
-    "Physical systems are defined by evolving channels of mutual constraint on joint histories. Spatial distance, geometry, and force are effective descriptions of the large-scale organization of those relations. What observers call gravitational attraction may be the geometric appearance of a universal, sign-definite sector of relational engagement.",
+    "There exists a microscopic description whose dynamics can be specified without primitive spatial distance or spacetime metric, such that geometric structure may arise as an effective description of constraints on joint evolution. A relation is a restriction on jointly accessible states or histories. Engagement is only the informal name for mutual consequentiality produced by that restriction.",
   companion:
-    "This is a closed derivation architecture, not a derivation, a theorem, or an established account of gravity.",
-  inversion: "Engagement is primitive. Attraction is emergent. Gravity is a later checkpoint.",
+    "The primitive is not gravity, attraction, mutual information, or engagement-as-a-force. RELATA is independent of AuthorityOS.",
+  inversion: "Constraint is primitive. Geometry is earned. Gravity is a later checkpoint.",
 };
 
 export const LAYERS: Layer[] = [

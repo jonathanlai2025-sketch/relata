@@ -1,22 +1,28 @@
-import { Simulation, type EnsembleId } from "../src/lib/engine.ts";
+import { runProtocol, ENSEMBLE_META, verdictOf } from "../src/lib/experiment-zero.ts";
 
-const ensembles: EnsembleId[] = ["torus", "random", "overlap"];
-
-for (const ensemble of ensembles) {
-  const sim = new Simulation({
-    ensemble,
-    n: 81,
-    seed: 7,
-    alpha: ensemble === "torus" ? 1 : 1,
-    beta: 1.4,
-    gamma: 1.2,
-    delta: 0.35,
-  });
-  sim.sweep(ensemble === "overlap" ? 40 : 12);
-  const report = sim.runExperimentZero();
-  console.log("\n===", ensemble, "===");
-  for (const line of report.log) console.log(line);
-  for (const g of report.gates) {
-    console.log(`  [${g.pass ? "PASS" : "HALT"}] ${g.id} ${g.name}: ${g.value}`);
-  }
+const reports = runProtocol();
+for (const r of reports) {
+  console.log("\n===", ENSEMBLE_META[r.name].name, "===");
+  console.log(verdictOf(r));
+  console.log(
+    JSON.stringify(
+      {
+        G1: r.gates.G1_connected,
+        G2: r.gates.G2_probe_invariance,
+        G3: r.gates.G3_persistence,
+        G4: r.gates.G4_finite_dimensional_growth,
+        G5: r.gates.G5_approx_metricity,
+        G6: r.gates.G6_nondegeneracy,
+        pass_zero: r.passZero,
+        pass_geometry_hint: r.passGeometryHint,
+        growth: r.growthExponent,
+        spec: r.spectralDim,
+        deg: r.meanDegree,
+        persist: r.persistJaccard,
+        giant: r.giantFraction,
+      },
+      null,
+      2,
+    ),
+  );
 }

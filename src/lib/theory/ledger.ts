@@ -24,29 +24,34 @@ export const LEDGER = {
     {
       id: "e4",
       title: "Expander trap as negative-control theorem-sketch",
-      body: "Random bounded-degree k-uniform hypergraphs have |B(r)| ~ b^r and diam ~ log N. Experiment Zero must reproduce that failure. Doing so validates the gates.",
+      body: "Random bounded-degree graphs have |B(r)| ~ b^r and diam ~ log N. C1 must be able to fail G4. Doing so validates the gates.",
     },
     {
       id: "e5",
       title: "Architecture of the ladder",
-      body: "Each arrow — relations → locality → dimension → metric → causal structure → fields → gravity — is a separate earning. Closing the spine means no missing definitions and no smuggled metrics, not that Einstein dynamics have been derived.",
+      body: "Each arrow may fail. Experiment Zero stops at persistent operational locality. Closing the spine is not proving gravity.",
+    },
+    {
+      id: "e6",
+      title: "Experiment Zero can return NO",
+      body: "On the frozen substrate, no ensemble passed. Persistence failed on a static control, so the intervention estimator is still too noisy. Adaptive Hebb did not produce a geometry distinct from the controls. That is the protocol working.",
     },
   ] as LedgerItem[],
   postulates: [
     {
       id: "p1",
-      title: "Overlap-pressure / shortcut penalty",
-      body: "A selection principle that penalizes low-context links using only combinatorial overlap. Stated intrinsically, tested on a phase diagram, never justified by target dimension.",
+      title: "Bounded node capacity (softmax degree budget)",
+      body: "Each node has a finite coupling budget. Stated intrinsically. First-run adaptive dynamics still failed Experiment Zero.",
     },
     {
       id: "p2",
-      title: "Sparse k-local clauses",
-      body: "The substrate is a sparse constraint hypergraph, so some combinatorial locality is assumed. Adjacency is allowed to evolve; it is not declared to be spacetime.",
+      title: "Hebbian co-fluctuation + uniform decay",
+      body: "Couplings update from joint statistics only. No distances. This update class is on trial; it is not assumed to geometrize.",
     },
     {
       id: "p3",
-      title: "Binary local states and 3-XORSAT toy dynamics",
-      body: "The laboratory uses 3-XORSAT Glauber dynamics as a finite, inspectable micro-law. It is a model of constraint, not a claim about the true Hilbert space of the world.",
+      title: "Kinetic Ising slaved to capacity-bounded couplings",
+      body: "The frozen laboratory uses a tiny N=28 kinetic-Ising substrate with Hebbian co-fluctuation and a softmax degree budget. It is a model of constraint, not a claim about the world. First-run: NO.",
     },
   ] as LedgerItem[],
   open: [
