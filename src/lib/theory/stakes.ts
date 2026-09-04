@@ -1,15 +1,14 @@
 export const CURRENT = {
-  localityEmergence: "FAIL" as const,
+  localityEmergence: "INSTRUMENT_INVALID" as const,
   meaning:
-    "Not a NO for the research question. A NO for this update class, this estimator, and any 2-hop-contaminated proposal.",
-  lookFor: "LOCALITY_EMERGENCE = PASS",
+    "Static random-regular failed persistence. The instrument could not adjudicate the hypothesis. That is not FAIL of the physics, and it is not PASS.",
+  lookFor: "LOCALITY-EMERGENCE-01",
   lookForNot: "We proved the gravity idea.",
   receipts: [
-    "First-run Ising substrate: no ensemble passed G1–G6.",
-    "G3 failed on a static control — the instrument is still too noisy.",
-    "2-hop clause proposals insert locality at γ=0. Uniform triples did not license the action.",
-    "G2 is now a measurement, not a tautology. Expander defense is now poly-vs-exp R².",
-    "A YES would still not derive gravity.",
+    "First-run: adaptive did not separate from mean-field.",
+    "T failed on a static control → INSTRUMENT_INVALID.",
+    "2-hop proposals insert locality. Uniform triples are the honest kernel.",
+    "A, S, and R were not in the ticket. PASS is forbidden.",
   ],
 };
 

@@ -126,6 +126,8 @@ export type EnsembleReport = {
   secondProbe?: number;
   expanderLike?: boolean;
   reciprocity?: number;
+  hittingProbe?: number;
+  qMin?: number;
 };
 
 export const FROZEN_FIRST_RUN: Record<
@@ -799,6 +801,16 @@ export class ZeroSession {
     const corr = lastStates ? corrFromStates(lastStates, params.samples, n) : undefined;
     const ev = evaluate(this.mHist, n, params, this.rng, corr);
     this.adj = ev.adj;
+    const hit = this.w ? hittingSim(this.w, n, this.rng) : null;
+    let hittingProbe = 0;
+    let qMin = 0;
+    if (this.m && corr && hit) {
+      const thHit = Math.max(1e-4, 0.5 * medianAbs(hit));
+      const thC = Math.max(1e-4, 0.5 * medianAbs(corr));
+      hittingProbe = absJaccard(this.m, hit, n, params.theta, thHit);
+      const qch = absJaccard(corr, hit, n, thC, thHit);
+      qMin = Math.min(ev.secondProbe, hittingProbe, qch);
+    }
     let meanM = 0;
     if (this.m) {
       for (let i = 0; i < n * n; i++) meanM += this.m[i]!;
@@ -821,6 +833,8 @@ export class ZeroSession {
       secondProbe: ev.secondProbe,
       expanderLike: ev.expanderLike,
       reciprocity: ev.probe.reciprocity,
+      hittingProbe,
+      qMin,
     };
     for (let k = 0; k < 50; k++) this.relax(0.08);
     return this.report;
@@ -895,6 +909,48 @@ export function verdictOf(r: EnsembleReport) {
   if (r.passGeometryHint) return "Geometry hint — Experiment One licensed. Still not gravity.";
   if (r.passZero) return "Locality only — G4/G5 not passed. Do not talk about continuum geometry.";
   return "NO for this update class and this estimator. Not a NO for the research question.";
+}
+
+function hittingSim(w: Float64Array, n: number, rng: Rng, cap = 10, trials = 5) {
+  const acc = new Float64Array(n * n);
+  for (let src = 0; src < n; src++) {
+    for (let tr = 0; tr < trials; tr++) {
+      const seen = new Int16Array(n);
+      seen.fill(-1);
+      seen[src] = 0;
+      let u = src;
+      for (let t = 1; t <= cap; t++) {
+        let s = 0;
+        for (let j = 0; j < n; j++) if (j !== u) s += at(w, n, u, j);
+        if (s <= 0) break;
+        let r = rng.next() * s;
+        let v = 0;
+        for (let j = 0; j < n; j++) {
+          if (j === u) continue;
+          r -= at(w, n, u, j);
+          if (r <= 0) {
+            v = j;
+            break;
+          }
+          v = j;
+        }
+        if (seen[v] < 0) seen[v] = t;
+        u = v;
+      }
+      for (let j = 0; j < n; j++) {
+        if (j === src) continue;
+        acc[src * n + j]! += seen[j] < 0 ? cap : seen[j]!;
+      }
+    }
+  }
+  const sim = zeros(n);
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      if (i === j) continue;
+      set(sim, n, i, j, 1 / (1 + acc[i * n + j]! / trials));
+    }
+  }
+  return sim;
 }
 
 export function diagnoseFrozenCoupling(w: Float64Array, p: Params, seed: number) {

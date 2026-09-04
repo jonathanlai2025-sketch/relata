@@ -83,11 +83,11 @@ export function LabView() {
         </div>
 
         <aside className="mb-4 rounded-lg border border-warn/35 bg-card px-4 py-3 text-sm leading-6">
-          <div className="text-[11px] uppercase tracking-[0.14em] text-warn">Proposal kernel</div>
+          <div className="text-[11px] uppercase tracking-[0.14em] text-warn">{lab.ticket.id}</div>
+          <p className="mt-1 font-display text-2xl tracking-tight">{lab.ticket.verdict}</p>
           <p className="mt-1">
-            Drawing candidate triples from a 2-hop neighborhood <strong>inserts locality into the
-            proposal</strong>. The honest kernel proposes uniformly random triples so the action
-            alone has to do the work. First-run Ising substrate: no ensemble passed.
+            {lab.ticket.reasons[0]} Conjunction only. One red predicate blocks promotion. Do not
+            optimize toward PASS.
           </p>
         </aside>
 

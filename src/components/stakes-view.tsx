@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { BOXED, CORRECTION, CURRENT, LEVELS, VALVE } from "@/lib/theory/stakes";
 import { LEVEL1_PASS, RECEIPTS, SMUGGLING_AUDIT } from "@/lib/theory/receipts";
+import { SENTENCE } from "@/lib/ticket";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +18,7 @@ export function StakesView() {
       <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
         What a pass would mean
       </p>
+      <p className="mt-3 font-display text-xl leading-snug text-foreground">{SENTENCE}</p>
       <h1 className="mt-4 font-display text-[2.1rem] leading-[1.15] tracking-tight sm:text-5xl">
         Locality first. Gravity much later.
       </h1>
@@ -27,7 +29,7 @@ export function StakesView() {
         <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-destructive">
           {LEVEL1_PASS.box} is not the current result
         </div>
-        <p className="mt-2 font-display text-3xl tracking-tight">LOCALITY_EMERGENCE = FAIL</p>
+        <p className="mt-2 font-display text-3xl tracking-tight">{CURRENT.localityEmergence}</p>
         <p className="mt-2 text-sm leading-6 text-muted">{CURRENT.meaning}</p>
         <p className="mt-2 text-sm leading-6 text-muted">{LEVEL1_PASS.requires}</p>
       </aside>

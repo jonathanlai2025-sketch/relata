@@ -49,9 +49,10 @@ export const RECEIPTS = [
 ] as const;
 
 export const LEVEL1_PASS = {
-  box: "LOCALITY_EMERGENCE = PASS",
-  requires: "R1–R6 at once, on a substrate that also passes G1–G6 as a region of parameter space.",
-  current: "FAIL",
+  box: "LOCALITY-EMERGENCE-01",
+  requires:
+    "Conjunction of N, C, Q, T, D, M, X, K, A, S, R. Cross-probe Q is agreement among intervention, correlation, and hitting — not changing which node is i. One red predicate blocks promotion.",
+  current: "INSTRUMENT_INVALID",
 };
 
 export const SMUGGLING_AUDIT = [

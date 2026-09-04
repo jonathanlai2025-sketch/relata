@@ -18,6 +18,7 @@ import {
   type RewireReport,
   type SweepRow,
 } from "@/lib/rewire";
+import { FROZEN_TICKET, adjudicate, type TicketResult } from "@/lib/ticket";
 
 export type LabEnsemble = EnsembleId | RewireId;
 
@@ -41,6 +42,7 @@ type LabState = {
   sweep: SweepRow[];
   sweepNotes: ReturnType<typeof summarizeSweep>;
   ablations: ReturnType<typeof runAblationSuite>;
+  ticket: TicketResult;
   busy: boolean;
   log: string[];
   init: () => void;
@@ -79,6 +81,7 @@ export const useLab = create<LabState>((set, get) => ({
   sweep: [],
   sweepNotes: [],
   ablations: [],
+  ticket: FROZEN_TICKET,
   busy: false,
   log: [
     "Frozen protocol loaded. First-run result: no ensemble passed Experiment Zero.",
@@ -157,10 +160,21 @@ export const useLab = create<LabState>((set, get) => ({
     }
     if (keep) session = keep;
     lines.push("Do not narrate adaptive Hebb as emergent nearness unless it beats the controls.");
+    const candidate = reports.find((r) => r.name === "adaptive_capacity") ?? null;
+    const ticket = adjudicate({
+      candidate,
+      controls: reports,
+      ablationsRun: get().ablations.length > 0,
+      scalingRun: false,
+      replicationRun: false,
+      usingTwoHopProposal: false,
+    });
+    lines.push(`${ticket.id} verdict: ${ticket.verdict}. ${ticket.reasons[0] ?? ""}`);
     set({
       busy: false,
       reports,
       report: reports.find((r) => r.name === get().ensemble) ?? null,
+      ticket,
       log: [...get().log, ...lines],
     });
   },

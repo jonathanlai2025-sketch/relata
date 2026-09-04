@@ -145,7 +145,7 @@ export function SpineView() {
           <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-destructive">
             Present status
           </div>
-          <p className="mt-1 font-display text-2xl tracking-tight">LOCALITY_EMERGENCE = FAIL</p>
+          <p className="mt-1 font-display text-2xl tracking-tight">{CURRENT.localityEmergence}</p>
           <p className="mt-1 text-sm leading-6 text-muted">{CURRENT.meaning}</p>
         </aside>
         <div className="mt-8 flex flex-wrap gap-3">
