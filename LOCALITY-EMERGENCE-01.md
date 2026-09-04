@@ -101,6 +101,25 @@ Note on a related implementation reviewed this session (RELATA, `src/lib/engine.
 
 The following are reported from earlier turns of this program and were **not re-derived** in this session; they are recorded as **claims, not receipts**: \(\beta\approx 0.7\)–\(1.0\) optimizes per-hop dynamic range (\(\approx 3.6\times\) decay per hop, so \(\hat R\ge 3.6^h\)); estimator E1 (first-arrival) is sensitivity-limited and pinned near \(D_H\approx 0.8\)–\(0.9\) on a 3D lattice; estimator E2 (response decay) returns the correct qualitative verdicts but biased-high exponents. **Re-verify before citing.**
 
+### 5.5 RELATA Layer 0 executable (this build)
+
+NAE 3-uniform Metropolis, CRN matched-pair \(M\), \(N=27\), \(R=5\), horizon 3, \(\beta=0.8\). Uniform triples only.
+
+Sham-intervention max deviation = **0.000**.
+
+| ID | persist | giant | 2-section clust. | M-rank recall | expander-like |
+|---|---|---|---|---|---|
+| P1 | 0.620 | 1.00 | 0.500 | 0.546 | yes |
+| P2 | 0.330 | 1.00 | 0.400 | 0.393 | yes |
+| P3 | 0.332 | 1.00 | 0.200 | 0.352 | yes |
+| C0 | 0.459 | 1.00 | 0.470 | 0.486 | yes |
+| C1 | 0.598 | 1.00 | 0.359 | 0.375 | yes |
+| C2 | 0.535 | 0.96 | 0.376 | 0.431 | yes |
+| C3 | 0.404 | 0.93 | 0.336 | 0.500 | yes |
+| frustrated_uniform | 0.581 | 1.00 | 0.399 | 0.472 | yes |
+
+At this \(N/R\), thresholded \(M\) is too dense for ball-growth \(D_H\). Rank-recall does not separate P1–P3 from C0–C3. Cutoffs stay **CALIBRATION-PENDING**. Frustrated-clause rewiring (uniform triples, not \(S_{\mathrm{rel}}\), not 2-hop) is indistinguishable from C1: **FAIL of this family at this \(N\)**. Ticket remains **NO PASS**. No numbers were frozen from this table.
+
 ## 6. What is deliberately NOT frozen
 
 Numerical thresholds — probe-overlap minimum, persistence \(\sigma\), \(D_{\mathrm{eff}}\) drift tolerance, \(\varepsilon\) — remain **CALIBRATION-PENDING**. They must be fixed against P1–P3 and C0–C3 at a common measurement resolution and frozen **before** the candidate mechanism is measured. Selecting attractive numbers now would replace geometric smuggling with statistical smuggling.

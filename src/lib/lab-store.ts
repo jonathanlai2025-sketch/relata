@@ -20,6 +20,13 @@ import {
   type SweepRow,
 } from "@/lib/rewire";
 import { FROZEN_TICKET, adjudicate, type TicketResult } from "@/lib/ticket";
+import {
+  interpretCalibration,
+  interpretCandidate,
+  runFrustratedCandidate,
+  runLayer0Calibration,
+  type Layer0Report,
+} from "@/lib/calibrate-zero";
 
 export type LabEnsemble = EnsembleId | RewireId;
 
@@ -44,6 +51,10 @@ type LabState = {
   sweepNotes: ReturnType<typeof summarizeSweep>;
   ablations: ReturnType<typeof runAblationSuite>;
   calibration: ReturnType<typeof runInstrumentCalibration>;
+  layer0: Layer0Report[];
+  layer0Notes: string[];
+  candidate: Layer0Report | null;
+  candidateNotes: string[];
   ticket: TicketResult;
   busy: boolean;
   log: string[];
@@ -58,6 +69,8 @@ type LabState = {
   runSweep: () => void;
   runAblations: () => void;
   runCalibration: () => void;
+  runLayer0: () => void;
+  runCandidate: () => void;
   setView: (v: "graph" | "matrix") => void;
 };
 
@@ -85,6 +98,10 @@ export const useLab = create<LabState>((set, get) => ({
   sweepNotes: [],
   ablations: [],
   calibration: [],
+  layer0: [],
+  layer0Notes: [],
+  candidate: null,
+  candidateNotes: [],
   ticket: FROZEN_TICKET,
   busy: false,
   log: [
@@ -225,6 +242,30 @@ export const useLab = create<LabState>((set, get) => ({
       );
     }
     set({ busy: false, calibration: rows, log: [...get().log, ...lines] });
+  },
+  runLayer0: () => {
+    set({ busy: true, running: false });
+    const rows = runLayer0Calibration(27);
+    const read = interpretCalibration(rows);
+    set({
+      busy: false,
+      layer0: rows,
+      layer0Notes: read.notes,
+      log: [...get().log, "Layer 0 calibration (NAE + CRN M). Controls only. Candidate not inspected.", ...read.notes],
+    });
+  },
+  runCandidate: () => {
+    set({ busy: true, running: false });
+    const cal = get().layer0.length ? get().layer0 : runLayer0Calibration(27);
+    const cand = runFrustratedCandidate(27, 20);
+    const notes = interpretCandidate(cand, cal);
+    set({
+      busy: false,
+      layer0: cal,
+      candidate: cand,
+      candidateNotes: notes,
+      log: [...get().log, "Frustrated-uniform candidate. Not S_rel. Not 2-hop.", ...notes, "TICKET: NO PASS"],
+    });
   },
   setView: (v) => set({ view: v }),
 }));

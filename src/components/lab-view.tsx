@@ -91,6 +91,67 @@ export function LabView() {
           </p>
         </aside>
 
+        <div className="mb-4 flex flex-wrap gap-2">
+          <Button onClick={() => lab.runLayer0()} disabled={lab.busy}>
+            {lab.busy ? "Running…" : "Calibrate P1–P3 / C0–C3"}
+          </Button>
+          <Button variant="secondary" onClick={() => lab.runCandidate()} disabled={lab.busy}>
+            {lab.busy ? "Running…" : "Run frustrated candidate"}
+          </Button>
+        </div>
+
+        {lab.layer0.length > 0 && (
+          <div className="mb-6 overflow-x-auto rounded-xl border border-border">
+            <table className="w-full min-w-[36rem] text-left text-sm">
+              <thead>
+                <tr className="border-b border-border text-[11px] uppercase tracking-[0.12em] text-muted">
+                  <th className="px-3 py-2 font-medium">ID</th>
+                  <th className="px-3 py-2 font-medium">Sham</th>
+                  <th className="px-3 py-2 font-medium">Persist</th>
+                  <th className="px-3 py-2 font-medium">Giant</th>
+                  <th className="px-3 py-2 font-medium">Clust.</th>
+                  <th className="px-3 py-2 font-medium">Recall</th>
+                  <th className="px-3 py-2 font-medium">Expander</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lab.layer0.map((r) => (
+                  <tr key={r.id} className="border-b border-border/70">
+                    <td className="px-3 py-2 font-mono">{r.id}</td>
+                    <td className="px-3 py-2 font-mono">{r.sham.toFixed(3)}</td>
+                    <td className="px-3 py-2 font-mono">{r.persist.toFixed(3)}</td>
+                    <td className="px-3 py-2 font-mono">{r.giant.toFixed(3)}</td>
+                    <td className="px-3 py-2 font-mono">{r.clustering.toFixed(3)}</td>
+                    <td className="px-3 py-2 font-mono">{r.rankRecall.toFixed(3)}</td>
+                    <td className="px-3 py-2 text-xs text-muted">{r.expanderLike ? "yes" : "no"}</td>
+                  </tr>
+                ))}
+                {lab.candidate && (
+                  <tr className="border-b border-border/70">
+                    <td className="px-3 py-2 font-mono">cand</td>
+                    <td className="px-3 py-2 font-mono">{lab.candidate.sham.toFixed(3)}</td>
+                    <td className="px-3 py-2 font-mono">{lab.candidate.persist.toFixed(3)}</td>
+                    <td className="px-3 py-2 font-mono">{lab.candidate.giant.toFixed(3)}</td>
+                    <td className="px-3 py-2 font-mono">{lab.candidate.clustering.toFixed(3)}</td>
+                    <td className="px-3 py-2 font-mono">{lab.candidate.rankRecall.toFixed(3)}</td>
+                    <td className="px-3 py-2 text-xs text-muted">{lab.candidate.expanderLike ? "yes" : "no"}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {lab.layer0Notes.length > 0 && (
+          <ul className="mb-4 space-y-1 text-sm leading-6 text-muted">
+            {lab.layer0Notes.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+            {lab.candidateNotes.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+        )}
+
         <div className="overflow-hidden rounded-xl border border-border bg-card">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-2 text-[11px] uppercase tracking-[0.12em] text-muted">
             <span>
