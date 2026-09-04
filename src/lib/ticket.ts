@@ -12,27 +12,22 @@ export const PROMOTION = "PASS iff every load-bearing predicate passes.";
 
 export const CONJUNCTION = "PASS = N ∧ C ∧ Q ∧ T ∧ D ∧ M ∧ X ∧ A ∧ S ∧ R";
 
-/** Frozen with Experiment Zero, before looking. Not invented to close this ticket. */
+/**
+ * Protocol G1 giant 0.80 is the only numeric gate still used as a screen.
+ * Persistence σ, probe-overlap, D_eff drift, and ε remain CALIBRATION-PENDING
+ * against P1–P3 and C0–C3. Do not treat 0.35 as frozen.
+ */
 export const PROTOCOL_THRESHOLDS = {
   giant: 0.8,
-  persist: 0.35,
-  triangle: 0.7,
-  dhMin: 0.6,
-  dhMax: 4.8,
-  vol1Frac: 0.55,
   degMin: 2,
   degMaxFrac: 0.45,
 } as const;
 
-/**
- * Not frozen. The corpus does not empirically justify overlap or drift cutoffs.
- * Calibrate on known positive and negative controls, then freeze, then look at the candidate.
- * Choosing attractive numbers now is statistical smuggling.
- */
 export const UNCALIBRATED = {
-  qJaccard: "uncalibrated",
-  scaleDrift: "uncalibrated",
-  polyMargin: "uncalibrated",
+  persist: "CALIBRATION-PENDING",
+  qJaccard: "CALIBRATION-PENDING",
+  scaleDrift: "CALIBRATION-PENDING",
+  epsilon: "CALIBRATION-PENDING",
 } as const;
 
 export type TicketVerdict = "PASS" | "FAIL" | "INSTRUMENT_INVALID";
@@ -41,14 +36,17 @@ export const LEDGERS = {
   conjecture: {
     title: "CONJECTURE",
     body: "relationship → locality → geometry → perhaps eventually gravity.",
+    state: "Unadjudicated",
   },
   experiment: {
     title: "EXPERIMENT",
     body: "Can coordinate-free relational dynamics produce robust operational locality?",
+    state: "Runnable in part; estimator thresholds not yet calibrated",
   },
   evidence: {
     title: "EVIDENCE",
-    body: "NO PASS. Failed candidate mechanisms remain FAIL. Runs whose instrumentation failed a positive control remain INSTRUMENT_INVALID, not evidence against the conjecture.",
+    body: "NO PASS. S_rel = −γT + δ Σ k²/N + ε K_4 ⇒ FAIL (mechanism, not instrument). 2-hop proposals fail N. K_4 numbers prior to the double-count fix are retracted.",
+    state: "NO PASS",
   },
 } as const;
 
@@ -89,23 +87,13 @@ export function adjudicate(args: {
 }): TicketResult {
   const reasons: string[] = [];
   const T0 = PROTOCOL_THRESHOLDS;
-  const staticCtl = (args.controls ?? []).filter(
-    (r) => r.name === "random_regular_control" || r.name === "erdos_renyi_control",
-  );
-  const instrumentDead = staticCtl.some((r) => r.persistJaccard < T0.persist);
-  if (instrumentDead) {
-    reasons.push(
-      "Static control failed T. INSTRUMENT_INVALID — not FAIL of the conjecture. Raise trials until frozen graphs persist.",
-    );
-  }
-
   const c = args.candidate;
   const N = !args.usingTwoHopProposal && noSmuggling();
   const C = c ? c.gates.G1_connected : null;
   const Q = args.qThresholdFrozen ? (c?.qMin != null ? c.qMin >= 0 : null) : null;
-  const T = c ? c.gates.G3_persistence : null;
+  const T = null;
   const D = c ? c.gates.G4_finite_dimensional_growth : null;
-  const M = c ? c.gates.G5_approx_metricity : null;
+  const M = null;
   const mf = (args.controls ?? []).find((r) => r.name === "mean_field_control");
   const er = (args.controls ?? []).find((r) => r.name === "erdos_renyi_control");
   const rg = (args.controls ?? []).find((r) => r.name === "random_regular_control");
@@ -119,49 +107,43 @@ export function adjudicate(args: {
   const R = args.replicationRun ? true : null;
 
   const predicates: Predicate[] = [
-    { id: "N", name: "No smuggling", value: N, detail: "No coordinates, target D, 1/r kernel, planted lattice, or 2-hop proposal in the law." },
-    { id: "C", name: "Connected", value: C, detail: `Giant ≥ ${T0.giant} (protocol-frozen)` },
-    { id: "Q", name: "Cross-probe", value: Q, detail: "Intervention M, correlation, and hitting must agree. Threshold uncalibrated — do not invent 0.80." },
-    { id: "T", name: "Persistent", value: T, detail: `Jaccard mid vs end ≥ ${T0.persist} (protocol-frozen)` },
-    { id: "D", name: "Finite-dimensional", value: D, detail: "Ball growth and spectral return, independently. Do not force 3 or 4." },
-    { id: "M", name: "Approximate metric", value: M, detail: `Triangle hold ≥ ${T0.triangle} (protocol-frozen)` },
-    { id: "X", name: "Non-degenerate / control separation", value: X, detail: "Mean-field, expander/random-regular, frozen skeleton, and null dynamics fail for the expected reason." },
-    { id: "A", name: "Ablation", value: A, detail: "Load-bearing cuts must collapse a claimed phase. Not run → cannot PASS." },
-    { id: "S", name: "Scaling", value: S, detail: "Drift bound uncalibrated. Not run → cannot PASS." },
-    { id: "R", name: "Replication", value: R, detail: "Independent implementation. Not run → cannot PASS." },
+    { id: "N", name: "No smuggling", value: N, detail: "No coordinates, target D, 1/r, planted lattice, or 2-hop proposal in the law." },
+    { id: "C", name: "Connected", value: C, detail: `Giant ≥ ${T0.giant} used only as a screen, not a frozen T cutoff.` },
+    { id: "Q", name: "Cross-probe", value: Q, detail: "CALIBRATION-PENDING against P1–P3 and C0–C3." },
+    { id: "T", name: "Persistent", value: T, detail: "σ CALIBRATION-PENDING. C2 must not supply T for free. Instrument-invalid only if P1–P3 fail T at the same resolution." },
+    { id: "D", name: "Finite-dimensional", value: D, detail: "Ball growth vs exponential, and spectral return, independently. Do not force 3 or 4." },
+    { id: "M", name: "Approximate metric", value: M, detail: "CALIBRATION-PENDING." },
+    { id: "X", name: "Non-degenerate / control separation", value: X, detail: "C0–C3 plus P1–P3. Expander is one adversary, not the set." },
+    { id: "A", name: "Ablation", value: A, detail: "Not run → cannot PASS." },
+    { id: "S", name: "Scaling", value: S, detail: "Drift bound CALIBRATION-PENDING." },
+    { id: "R", name: "Replication", value: R, detail: "Not run → cannot PASS." },
   ];
 
-  if (instrumentDead) {
-    return { id: TICKET_ID, verdict: "INSTRUMENT_INVALID", predicates, reasons };
+  if (args.usingTwoHopProposal) {
+    reasons.push("2-hop proposal fails N_no-smuggling as written.");
   }
-
-  if (predicates.some((p) => p.value !== true)) {
-    reasons.push(PROMOTION);
-    reasons.push("Q and S cutoffs are uncalibrated. PASS is forbidden until they are frozen against controls, not chosen to look good.");
-    return { id: TICKET_ID, verdict: "FAIL", predicates, reasons };
-  }
-
-  reasons.push("Conjunction true. Still not gravity. Levels 2–5 remain LOCKED until separately earned.");
-  return { id: TICKET_ID, verdict: "PASS", predicates, reasons };
+  reasons.push(PROMOTION);
+  reasons.push("Q, T, M, S cutoffs are CALIBRATION-PENDING. PASS is forbidden.");
+  return { id: TICKET_ID, verdict: "FAIL", predicates, reasons };
 }
 
 export const FROZEN_TICKET: TicketResult = {
   id: TICKET_ID,
-  verdict: "INSTRUMENT_INVALID",
+  verdict: "FAIL",
   predicates: [
-    { id: "N", name: "No smuggling", value: true, detail: "Ising law is metric-free. 2-hop caught separately." },
-    { id: "C", name: "Connected", value: false, detail: "First-run adaptive giant failed. Mechanism FAIL." },
-    { id: "Q", name: "Cross-probe", value: null, detail: "Uncalibrated. A naive M threshold does not separate cycle from random-regular." },
-    { id: "T", name: "Persistent", value: false, detail: "Failed on static random-regular. INSTRUMENT_INVALID." },
-    { id: "D", name: "Finite-dimensional", value: false, detail: "Not reached under a valid instrument." },
-    { id: "M", name: "Approximate metric", value: null, detail: "Not certified." },
-    { id: "X", name: "Non-degenerate / control separation", value: null, detail: "Cannot read X until T is valid on static graphs." },
-    { id: "A", name: "Ablation", value: null, detail: "Registered. No phase to ablate." },
-    { id: "S", name: "Scaling", value: null, detail: "Uncalibrated and not run." },
+    { id: "N", name: "No smuggling", value: true, detail: "Uniform triples. 2-hop kernel fails N as written." },
+    { id: "C", name: "Connected", value: false, detail: "S_rel: either shards or a giant that looks like the no-action baseline." },
+    { id: "Q", name: "Cross-probe", value: null, detail: "CALIBRATION-PENDING." },
+    { id: "T", name: "Persistent", value: null, detail: "σ CALIBRATION-PENDING." },
+    { id: "D", name: "Finite-dimensional", value: false, detail: "No point in the S_rel screen is connected, homogeneous, and redundancy-rich." },
+    { id: "M", name: "Approximate metric", value: null, detail: "CALIBRATION-PENDING." },
+    { id: "X", name: "Non-degenerate / control separation", value: false, detail: "C ∧ X ∧ D not jointly achieved." },
+    { id: "A", name: "Ablation", value: null, detail: "No phase to ablate." },
+    { id: "S", name: "Scaling", value: null, detail: "CALIBRATION-PENDING." },
     { id: "R", name: "Replication", value: null, detail: "No pass to replicate." },
   ],
   reasons: [
-    "NO PASS. First-run: INSTRUMENT_INVALID (static T failed). Adaptive mechanism: FAIL (did not separate from mean-field).",
+    "NO PASS. S_rel ⇒ FAIL (mechanism). Diagnostics validated; positive controls distinguish lattice from expander. Not INSTRUMENT_INVALID.",
     SENTENCE,
   ],
 };

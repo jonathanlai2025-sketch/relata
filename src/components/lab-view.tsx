@@ -86,7 +86,7 @@ export function LabView() {
           <div className="text-[11px] uppercase tracking-[0.14em] text-warn">{lab.ticket.id}</div>
           <p className="mt-1 font-display text-2xl tracking-tight">{lab.ticket.verdict}</p>
           <p className="mt-1">
-            {lab.ticket.reasons[0]} Conjunction only. One red predicate blocks promotion. Do not
+            {lab.ticket.reasons[0]} Conjunction only. S_rel is FAIL. 2-hop proposals fail N. Do not
             optimize toward PASS.
           </p>
         </aside>

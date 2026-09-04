@@ -275,7 +275,7 @@ and only then
 
 Gravity would not be engagement pulling things together. It would be a macroscopic property of a relational substrate reorganizing under physical state.
 
-**Present status.** Ticket LOCALITY-EMERGENCE-01: \(\texttt{NO PASS}\). Failed mechanisms remain FAIL. First-run static persistence: \(\texttt{INSTRUMENT\_INVALID}\). Levels 2–5 are LOCKED. Q and S cutoffs are uncalibrated; do not invent them.
+**Present status.** Ticket LOCALITY-EMERGENCE-01: \(\texttt{NO PASS}\). \[S_{\mathrm{rel}}=-\gamma T+\delta\sum k_i^2/N+\varepsilon K_4\Rightarrow\mathrm{FAIL}\] (mechanism, not instrument). Two regimes, no third. \(K_4\) numbers prior to the double-count fix are retracted. 2-hop proposals fail \(N\). Persistence \(\sigma\), probe overlap, and \(D_{\mathrm{eff}}\) drift are CALIBRATION-PENDING. Levels 2–5 LOCKED.
 
 ---
 

@@ -1,14 +1,14 @@
 export const CURRENT = {
   localityEmergence: "NO PASS" as const,
   meaning:
-    "Failed candidate mechanisms remain FAIL. First-run static persistence failed: INSTRUMENT_INVALID, not evidence against the conjecture.",
+    "S_rel = −γT + δ Σ k²/N + ε K_4 ⇒ FAIL. Mechanism, not instrument. Two regimes, no third. Thresholds CALIBRATION-PENDING.",
   lookFor: "LOCALITY-EMERGENCE-01",
   lookForNot: "We proved the gravity idea.",
   receipts: [
-    "First-run: adaptive did not separate from mean-field.",
-    "T failed on a static control → INSTRUMENT_INVALID.",
-    "2-hop proposals insert locality. Uniform triples are the honest kernel.",
-    "A, S, and R were not in the ticket. PASS is forbidden.",
+    "N=1000 uniform-triple screen: no point is connected, homogeneous, and redundancy-rich.",
+    "K4 restores the giant by destroying clustering. ε=2.0 ≈ γ=0 baseline.",
+    "Any earlier K_4 number is retracted (double-count).",
+    "2-hop proposals fail N. Persistence σ, probe overlap, D_eff drift remain CALIBRATION-PENDING.",
   ],
 };
 
