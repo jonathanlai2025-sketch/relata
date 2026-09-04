@@ -123,9 +123,24 @@ Read this correctly:
 
 That is Experiment Zero working as designed: it can return NO.
 
-## What to do next if continuing
+## Proposal kernel (do not skip)
 
-1. Raise intervention trials until static controls pass G3.
-2. Only then compare adaptive dynamics against those controls.
-3. If adaptive still matches mean-field, abandon this update rule.
-4. If adaptive passes G1–G6 and controls do not pass the same pattern, license Experiment One (causal cone). Still not gravity.
+The archive's clause rewiring drew candidate triples from a **2-hop neighborhood pool**. That biases the proposal distribution toward locality, so any locality it finds is partly inserted rather than derived.
+
+The honest kernel proposes **uniformly random triples** from \(\binom{N}{3}\). The action alone has to concentrate the posterior onto local clauses.
+
+Ablation: run both kernels at \(\gamma=0\) (action off). If 2-hop is already clustered and finite-dimensional at \(\gamma=0\), the archive inserted the geometry. Credit the action only if uniform triples at \(\gamma>0\) beat uniform triples at \(\gamma=0\), and beat 2-hop at \(\gamma=0\).
+
+First sweep (N=24, 3 seeds). 2-section clustering:
+
+| Kernel | γ | Clustering |
+|---|---|---|
+| uniform | 0 | 0.405 |
+| uniform | 1 | 0.457 |
+| 2-hop | 0 | 0.478 |
+| 2-hop | 1 | 0.471 |
+
+2-hop at γ=0 is already more clustered than honest uniform at γ=1. Locality was inserted by the proposal. The action is not licensed.
+
+---
+

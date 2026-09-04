@@ -32,9 +32,9 @@ export const LEDGER = {
       body: "Each arrow may fail. Experiment Zero stops at persistent operational locality. Closing the spine is not proving gravity.",
     },
     {
-      id: "e6",
-      title: "Experiment Zero can return NO",
-      body: "On the frozen substrate, no ensemble passed. Persistence failed on a static control, so the intervention estimator is still too noisy. Adaptive Hebb did not produce a geometry distinct from the controls. That is the protocol working.",
+      id: "e7",
+      title: "2-hop proposal is locality smuggling",
+      body: "Sampling rewires from a 2-hop neighborhood inserts combinatorial locality into the proposal kernel. The honest kernel is uniformly random triples. Credit the action only if that kernel geometrizes.",
     },
   ] as LedgerItem[],
   postulates: [
@@ -112,6 +112,11 @@ export const LEDGER = {
       title: "Treating a visualization layout as geometry",
       body: "Force-directed drawings and MDS embeddings are observer sketches. Independence from layout is a gate.",
     },
+    {
+      id: "f7",
+      title: "2-hop rewiring pool as a derivation of locality",
+      body: "The proposal already lives in a neighborhood. Uniform triples are the honest kernel.",
+    },
   ] as LedgerItem[],
 };
 
@@ -119,6 +124,8 @@ export const CIRCULARITY = [
   { expr: "Ω_AB ⊆ Ω_A × Ω_B", legal: true, note: "Joint-history restriction. Legal primitive." },
   { expr: "M from do-intervention", legal: true, note: "Operational influence. Legal observable." },
   { expr: "Overlap of influence neighborhoods", legal: true, note: "Combinatorial, metric-free." },
+  { expr: "Uniform random triples", legal: true, note: "Honest proposal. Action must geometrize." },
+  { expr: "2-hop neighborhood proposal", legal: false, note: "Inserts locality into the kernel." },
   { expr: "E = G m1 m2 / r²", legal: false, note: "Newtonian gravity under a new name." },
   { expr: "E = f(r)", legal: false, note: "Metric smuggled into the coupling." },
   { expr: "d = 1/I as motion", legal: false, note: "Dictionary, not dynamics." },

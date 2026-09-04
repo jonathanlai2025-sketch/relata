@@ -1,0 +1,171 @@
+{
+  "rows": [
+    {
+      "kernel": "uniform",
+      "gamma": 0,
+      "seed": 1,
+      "clustering": 0.4373436748436749,
+      "hausdorff": null,
+      "giant": 1,
+      "meanDegree": 7.666666666666667,
+      "passZero": false,
+      "g4": false
+    },
+    {
+      "kernel": "uniform",
+      "gamma": 0,
+      "seed": 2,
+      "clustering": 0.39338624338624345,
+      "hausdorff": null,
+      "giant": 1,
+      "meanDegree": 7.916666666666667,
+      "passZero": false,
+      "g4": false
+    },
+    {
+      "kernel": "uniform",
+      "gamma": 0,
+      "seed": 3,
+      "clustering": 0.3853269415769416,
+      "hausdorff": null,
+      "giant": 1,
+      "meanDegree": 8,
+      "passZero": false,
+      "g4": false
+    },
+    {
+      "kernel": "uniform",
+      "gamma": 1,
+      "seed": 1,
+      "clustering": 0.43820438820438823,
+      "hausdorff": null,
+      "giant": 1,
+      "meanDegree": 8.083333333333334,
+      "passZero": false,
+      "g4": false
+    },
+    {
+      "kernel": "uniform",
+      "gamma": 1,
+      "seed": 2,
+      "clustering": 0.45636724386724387,
+      "hausdorff": null,
+      "giant": 1,
+      "meanDegree": 8.583333333333334,
+      "passZero": false,
+      "g4": false
+    },
+    {
+      "kernel": "uniform",
+      "gamma": 1,
+      "seed": 3,
+      "clustering": 0.4751433751433753,
+      "hausdorff": null,
+      "giant": 1,
+      "meanDegree": 8.416666666666666,
+      "passZero": false,
+      "g4": false
+    },
+    {
+      "kernel": "two_hop",
+      "gamma": 0,
+      "seed": 1,
+      "clustering": 0.4928270142555857,
+      "hausdorff": null,
+      "giant": 0.875,
+      "meanDegree": 7.666666666666667,
+      "passZero": false,
+      "g4": false
+    },
+    {
+      "kernel": "two_hop",
+      "gamma": 0,
+      "seed": 2,
+      "clustering": 0.49390155299246213,
+      "hausdorff": null,
+      "giant": 0.9166666666666666,
+      "meanDegree": 7.916666666666667,
+      "passZero": false,
+      "g4": false
+    },
+    {
+      "kernel": "two_hop",
+      "gamma": 0,
+      "seed": 3,
+      "clustering": 0.44784987739533194,
+      "hausdorff": null,
+      "giant": 0.9166666666666666,
+      "meanDegree": 7.666666666666667,
+      "passZero": false,
+      "g4": false
+    },
+    {
+      "kernel": "two_hop",
+      "gamma": 1,
+      "seed": 1,
+      "clustering": 0.4939185153470868,
+      "hausdorff": null,
+      "giant": 0.875,
+      "meanDegree": 7.25,
+      "passZero": false,
+      "g4": false
+    },
+    {
+      "kernel": "two_hop",
+      "gamma": 1,
+      "seed": 2,
+      "clustering": 0.4469598583234948,
+      "hausdorff": null,
+      "giant": 0.9166666666666666,
+      "meanDegree": 8.083333333333334,
+      "passZero": false,
+      "g4": false
+    },
+    {
+      "kernel": "two_hop",
+      "gamma": 1,
+      "seed": 3,
+      "clustering": 0.4725711486581051,
+      "hausdorff": null,
+      "giant": 0.9583333333333334,
+      "meanDegree": 7.833333333333333,
+      "passZero": false,
+      "g4": false
+    }
+  ],
+  "notes": [
+    {
+      "label": "uniform|γ=0",
+      "kernel": "uniform",
+      "gamma": 0,
+      "clustering": 0.40535228660228667,
+      "hausdorff": null,
+      "note": "Baseline random 3-uniform. Action off."
+    },
+    {
+      "label": "uniform|γ=1",
+      "kernel": "uniform",
+      "gamma": 1,
+      "clustering": 0.4565716690716692,
+      "hausdorff": null,
+      "note": "Honest test. If this is not more local than uniform γ=0, the action failed."
+    },
+    {
+      "label": "two_hop|γ=0",
+      "kernel": "two_hop",
+      "gamma": 0,
+      "clustering": 0.4781928148811266,
+      "hausdorff": null,
+      "note": "Locality at γ=0: proposal, not action."
+    },
+    {
+      "label": "two_hop|γ=1",
+      "kernel": "two_hop",
+      "gamma": 1,
+      "clustering": 0.4711498407762289,
+      "hausdorff": null,
+      "note": "Contaminated kernel with action on. Do not credit the action."
+    }
+  ],
+  "reading": "2-hop at γ=0 is already more clustered than uniform at γ=1. Locality was inserted by the proposal kernel."
+}

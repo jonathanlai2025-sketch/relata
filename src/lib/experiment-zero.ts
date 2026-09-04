@@ -109,7 +109,7 @@ export const GATE_DETAIL: Record<GateKey, { id: string; name: string; detail: st
 };
 
 export type EnsembleReport = {
-  name: EnsembleId;
+  name: string;
   adaptive: boolean;
   giantFraction: number;
   persistJaccard: number;
@@ -744,4 +744,12 @@ export function verdictOf(r: EnsembleReport) {
   if (r.passGeometryHint) return "Geometry hint — Experiment One licensed. Still not gravity.";
   if (r.passZero) return "Locality only — G4/G5 not passed. Do not talk about continuum geometry.";
   return "NO for this update class and this estimator. Not a NO for the research question.";
+}
+
+export function diagnoseFrozenCoupling(w: Float64Array, p: Params, seed: number) {
+  const rng = new Rng(seed ^ 0x9e3779b9);
+  const n = p.n;
+  const m0 = influenceMatrix(w, n, p, rng);
+  const m1 = influenceMatrix(w, n, p, rng);
+  return evaluate([m0, m1], n, p, rng);
 }

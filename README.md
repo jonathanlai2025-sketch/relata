@@ -27,6 +27,8 @@ python3 experiments/experiment_zero.py
 
 Do not narrate adaptive Hebb as emergent nearness unless it beats the controls after the instrument (G3 on static graphs) is fixed.
 
+**Proposal kernel.** Archive rewiring that samples triples from a 2-hop neighborhood inserts locality. The honest kernel is uniform \(\binom{N}{3}\). Sweep: `npx tsx experiments/run-proposal-sweep.ts`.
+
 ## License
 
 MIT

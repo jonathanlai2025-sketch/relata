@@ -1,0 +1,181 @@
+import { create } from "zustand";
+import {
+  ENSEMBLE_META,
+  PROTOCOL,
+  ZeroSession,
+  type EnsembleId,
+  type EnsembleReport,
+  type Params,
+  verdictOf,
+} from "@/lib/experiment-zero";
+import {
+  REWIRE_META,
+  RewireSession,
+  runProposalSweep,
+  summarizeSweep,
+  type RewireId,
+  type RewireReport,
+  type SweepRow,
+} from "@/lib/rewire";
+
+export type LabEnsemble = EnsembleId | RewireId;
+
+export function isRewire(id: string): id is RewireId {
+  return id === "overlap_uniform" || id === "overlap_two_hop";
+}
+
+export function labelOf(id: string) {
+  if (isRewire(id)) return REWIRE_META[id].name;
+  return ENSEMBLE_META[id as EnsembleId]?.name ?? id;
+}
+
+type LabState = {
+  ensemble: LabEnsemble;
+  params: Params;
+  view: "graph" | "matrix";
+  running: boolean;
+  steps: number;
+  report: EnsembleReport | RewireReport | null;
+  reports: EnsembleReport[];
+  sweep: SweepRow[];
+  sweepNotes: ReturnType<typeof summarizeSweep>;
+  busy: boolean;
+  log: string[];
+  init: () => void;
+  setEnsemble: (id: LabEnsemble) => void;
+  setParam: (k: keyof Params, v: number) => void;
+  toggleRun: () => void;
+  step: (k?: number) => void;
+  tick: () => void;
+  runZero: () => void;
+  runProtocol: () => void;
+  runSweep: () => void;
+  setView: (v: "graph" | "matrix") => void;
+};
+
+type AnySession = ZeroSession | RewireSession;
+let session: AnySession | null = null;
+
+export function getSession() {
+  return session;
+}
+
+function makeSession(id: LabEnsemble, params: Params): AnySession {
+  if (isRewire(id)) return new RewireSession(id, params);
+  return new ZeroSession(id, params);
+}
+
+export const useLab = create<LabState>((set, get) => ({
+  ensemble: "adaptive_capacity",
+  params: { ...PROTOCOL },
+  view: "graph",
+  running: false,
+  steps: 0,
+  report: null,
+  reports: [],
+  sweep: [],
+  sweepNotes: [],
+  busy: false,
+  log: [
+    "Frozen protocol loaded. First-run result: no ensemble passed Experiment Zero.",
+    "Proposal kernel: uniform triples are honest. 2-hop pools insert locality.",
+  ],
+  init: () => {
+    const s = get();
+    session = makeSession(s.ensemble, s.params);
+    set({
+      running: false,
+      steps: 0,
+      report: null,
+      log: [
+        `Initialized ${labelOf(s.ensemble)}. N=${s.params.n}, θ=${s.params.theta}.`,
+        isRewire(s.ensemble)
+          ? "Rewiring: candidate triples from the stated kernel. Action cannot be credited if the proposal is 2-hop."
+          : "Neighborhoods are reconstructed from interventional M, not from a declared skeleton.",
+      ],
+    });
+  },
+  setEnsemble: (id) => {
+    set({ ensemble: id });
+    get().init();
+  },
+  setParam: (k, v) => set({ params: { ...get().params, [k]: v } }),
+  toggleRun: () => set({ running: !get().running }),
+  step: (k = 1) => {
+    if (!session) get().init();
+    if (!session) return;
+    session.step(k);
+    set({ steps: session.stepCount, report: null });
+  },
+  tick: () => {
+    if (!get().running) return;
+    get().step(1);
+  },
+  runZero: () => {
+    if (!session) get().init();
+    if (!session) return;
+    set({ busy: true, running: false });
+    const report = session.runFull();
+    const extra =
+      "combinatorial" in report && report.combinatorial
+        ? `  2-section clustering=${(report as RewireReport).combinatorial.clustering.toFixed(3)}  D_H=${(report as RewireReport).combinatorial.hausdorff.toFixed(2)}`
+        : "";
+    set({
+      busy: false,
+      steps: session.stepCount,
+      report,
+      log: [
+        ...get().log,
+        `${labelOf(report.name)}: pass_zero=${report.passZero}.${extra}`,
+        verdictOf(report),
+      ],
+    });
+  },
+  runProtocol: () => {
+    set({ busy: true, running: false });
+    const ids: EnsembleId[] = [
+      "adaptive_capacity",
+      "mean_field_control",
+      "erdos_renyi_control",
+      "random_regular_control",
+    ];
+    const reports: EnsembleReport[] = [];
+    const lines: string[] = ["Full protocol. Four ensembles. Gates pre-registered."];
+    let keep: AnySession | null = null;
+    for (const id of ids) {
+      const sess = new ZeroSession(id, get().params);
+      const r = sess.runFull();
+      reports.push(r);
+      if (id === get().ensemble) keep = sess;
+      lines.push(
+        `${ENSEMBLE_META[id].name}: G1=${r.gates.G1_connected} G3=${r.gates.G3_persistence} G4=${r.gates.G4_finite_dimensional_growth} G6=${r.gates.G6_nondegeneracy} → ${r.passZero ? "locality" : "NO"}`,
+      );
+    }
+    if (keep) session = keep;
+    lines.push("Do not narrate adaptive Hebb as emergent nearness unless it beats the controls.");
+    set({
+      busy: false,
+      reports,
+      report: reports.find((r) => r.name === get().ensemble) ?? null,
+      log: [...get().log, ...lines],
+    });
+  },
+  runSweep: () => {
+    set({ busy: true, running: false });
+    const rows = runProposalSweep({ ...get().params, n: Math.min(24, get().params.n), steps: 20, trials: 8 });
+    const notes = summarizeSweep(rows);
+    const lines = ["Proposal-kernel sweep. Uniform vs 2-hop. γ=0 is the contamination test."];
+    for (const n of notes) {
+      lines.push(
+        `${n.kernel} γ=${n.gamma}: clustering=${n.clustering.toFixed(3)}  D_H=${n.hausdorff.toFixed(2)} — ${n.note}`,
+      );
+    }
+    set({
+      busy: false,
+      sweep: rows,
+      sweepNotes: notes,
+      log: [...get().log, ...lines],
+    });
+  },
+  setView: (v) => set({ view: v }),
+}));

@@ -324,6 +324,8 @@ Equivalently: can a discrete, background-independent update rule on an abstract 
 | \(\Omega_{AB}\subseteq\Omega_A\times\Omega_B\) | Yes |
 | \(M\) from do-intervention | Yes |
 | Overlap of influence neighborhoods | Yes |
+| Uniform random clause proposals | Yes — action must geometrize |
+| 2-hop neighborhood proposal pool | No — inserts locality into the kernel |
 | \(E=Gm_1m_2/r^2\) | No — renames Newton |
 | \(E=f(r)\) | No — metric smuggling |
 | \(d\sim 1/I\) as motion | No — dictionary, not dynamics |
@@ -335,7 +337,8 @@ Equivalently: can a discrete, background-independent update rule on an abstract 
 ## What this repository contains
 
 - This spine (definitions, postulates, gates, forbidden moves).
-- A finite 3-XORSAT laboratory implementing Experiment Zero on three ensembles.
+- Frozen Experiment Zero: kinetic Ising + capacity, four ensembles. First-run: NO.
+- Clause rewiring with two proposal kernels: uniform triples (honest) vs 2-hop pool (archive contamination).
 - No claim that the laboratory has derived spacetime or gravity.
 
 The correct next question after a genuine Experiment Zero pass:
