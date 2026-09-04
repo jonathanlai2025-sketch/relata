@@ -32,9 +32,19 @@ export const LEDGER = {
       body: "Each arrow may fail. Experiment Zero stops at persistent operational locality. Closing the spine is not proving gravity.",
     },
     {
+      id: "e6",
+      title: "Experiment Zero can return NO",
+      body: "On the frozen substrate, no ensemble passed. Persistence failed on a static control, so the intervention estimator is still too noisy. Adaptive Hebb did not produce a geometry distinct from the controls. That is the protocol working.",
+    },
+    {
       id: "e7",
       title: "2-hop proposal is locality smuggling",
       body: "Sampling rewires from a 2-hop neighborhood inserts combinatorial locality into the proposal kernel. The honest kernel is uniformly random triples. Credit the action only if that kernel geometrizes.",
+    },
+    {
+      id: "e8",
+      title: "Stakes of a genuine Zero pass",
+      body: "If Experiment Zero survived controls, ablations, scaling, probes, and replication, that would be LOCALITY_EMERGENCE = PASS — evidence that distance-like structure can appear from relationships without a metric. Gravity would remain Levels 3–5 above that. Present status: FAIL.",
     },
   ] as LedgerItem[],
   postulates: [

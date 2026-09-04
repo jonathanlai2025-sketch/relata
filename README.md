@@ -14,6 +14,8 @@ See [EXPERIMENT_ZERO.md](./EXPERIMENT_ZERO.md) and [THEORY.md](./THEORY.md).
 
 A YES does not derive gravity. The first run returned **NO** for this update class and this estimator — including the adaptive Hebb candidate and the static controls.
 
+**Present status.** `LOCALITY_EMERGENCE = FAIL`. The exciting next result is a genuine pass at Level 1, not a gravity derivation. See the Stakes page in the app.
+
 | Ensemble | Role |
 |---|---|
 | Adaptive capacity + Hebb | Candidate update class |

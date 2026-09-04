@@ -241,6 +241,44 @@ That is a NO for this update class and this estimator, not a NO for the research
 
 ---
 
+## What a genuine pass would mean
+
+If Experiment Zero survives controls, ablations, finite-size scaling, independent probes, and replication, the result is **not** gravity. It is:
+
+\[
+\boxed{\text{LOCALITY\_EMERGENCE = PASS}}
+\]
+
+Everyday language: the system was given relationships, not distance — and distance-like structure appeared anyway.
+
+That is more fundamental than the gravity thought that started this, and still several levels below gravity.
+
+| Level | If earned | Still not |
+|---|---|---|
+| 1 Experiment Zero | Operational locality from non-geometric dynamics | Gravity |
+| 2 Scaling | A universality class | Gravity |
+| 3 Causal cone | Spacetime kinematics | Gravity |
+| 4 Effective fields | Physics can live on it | Gravity |
+| 5 Universal gravitational sector | \(G_{\mu\nu}\approx 8\pi G T_{\mu\nu}\) without being inserted | Proven nature |
+
+The original sentence — “what if it’s just attraction through engagement?” — is directionally right and one layer too high.
+
+\[
+\boxed{\text{relationship}\rightarrow\text{locality}\rightarrow\text{geometry}}
+\]
+
+and only then
+
+\[
+\boxed{\text{geometry's response to physical state}\rightarrow\text{gravity}}
+\]
+
+Gravity would not be engagement pulling things together. It would be a macroscopic property of a relational substrate reorganizing under physical state.
+
+**Present status.** \(\text{LOCALITY\_EMERGENCE}=\text{FAIL}\). Receipts: first-run Ising NO; G3 fails on static controls; 2-hop proposals insert locality. Look for a green Level 1 with receipts that it was not embedded, tuned, or measurement-dependent. Then attack it. Do not skip to Level 5.
+
+---
+
 ## Layer 4 — Metric reconstruction (after a pass)
 
 \[

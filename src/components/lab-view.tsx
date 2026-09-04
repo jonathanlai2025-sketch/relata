@@ -65,9 +65,8 @@ export function LabView() {
             </div>
             <h1 className="font-display text-3xl tracking-tight">Experiment Zero</h1>
             <p className="mt-1 max-w-xl text-sm leading-6 text-muted">
-              Does a coordinate-free constraint-and-update system enter a connected, persistent,
-              finite-dimensional, approximately metric operational phase? A YES does not derive
-              gravity.
+              The result to look for is LOCALITY_EMERGENCE = PASS, with receipts it was not
+              embedded, tuned, or measurement-dependent. A YES does not derive gravity.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
