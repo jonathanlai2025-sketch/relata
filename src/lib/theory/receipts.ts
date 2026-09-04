@@ -52,7 +52,7 @@ export const LEVEL1_PASS = {
   box: "LOCALITY-EMERGENCE-01",
   requires:
     "Conjunction of N, C, Q, T, D, M, X, K, A, S, R. Cross-probe Q is agreement among intervention, correlation, and hitting — not changing which node is i. One red predicate blocks promotion.",
-  current: "INSTRUMENT_INVALID",
+  current: "NO PASS",
 };
 
 export const SMUGGLING_AUDIT = [

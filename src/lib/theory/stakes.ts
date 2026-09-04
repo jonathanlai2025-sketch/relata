@@ -1,7 +1,7 @@
 export const CURRENT = {
-  localityEmergence: "INSTRUMENT_INVALID" as const,
+  localityEmergence: "NO PASS" as const,
   meaning:
-    "Static random-regular failed persistence. The instrument could not adjudicate the hypothesis. That is not FAIL of the physics, and it is not PASS.",
+    "Failed candidate mechanisms remain FAIL. First-run static persistence failed: INSTRUMENT_INVALID, not evidence against the conjecture.",
   lookFor: "LOCALITY-EMERGENCE-01",
   lookForNot: "We proved the gravity idea.",
   receipts: [

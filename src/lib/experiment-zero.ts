@@ -272,6 +272,17 @@ function initMeanField(n: number, cap: number) {
   return w;
 }
 
+function initCycle(n: number, cap: number) {
+  const w = zeros(n);
+  const v = cap / 2;
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n;
+    set(w, n, i, j, v);
+    set(w, n, j, i, v);
+  }
+  return w;
+}
+
 function sampleStates(w: Float64Array, n: number, nSamples: number, rng: Rng, burn = 6) {
   const s = new Float64Array(n);
   for (let i = 0; i < n; i++) s[i] = rng.next() < 0.5 ? 1 : 0;
@@ -988,6 +999,38 @@ export function runAblationSuite(p: Params = { ...PROTOCOL, n: 20, steps: 16, tr
       g6: r.gates.G6_nondegeneracy,
       expanderLike: r.expanderLike ?? true,
       secondProbe: r.secondProbe ?? 0,
+    };
+  });
+}
+
+export type CalibrationRow = {
+  name: string;
+  role: string;
+  persist: number;
+  giant: number;
+  growth: number;
+  expanderLike: boolean;
+  deg: number;
+};
+
+export function runInstrumentCalibration(p: Params = { ...PROTOCOL, n: 20, trials: 10 }): CalibrationRow[] {
+  const n = p.n;
+  const rng = new Rng(p.seed);
+  const specs: { name: string; role: string; w: Float64Array }[] = [
+    { name: "cycle", role: "geometric +", w: initCycle(n, p.capacity) },
+    { name: "random-regular", role: "expander −", w: initRegular(n, p.capacity % 2 === 0 ? p.capacity : p.capacity - 1, rng) },
+    { name: "mean-field", role: "degenerate −", w: initMeanField(n, p.capacity) },
+  ];
+  return specs.map((s) => {
+    const ev = diagnoseFrozenCoupling(s.w, p, p.seed);
+    return {
+      name: s.name,
+      role: s.role,
+      persist: ev.persist,
+      giant: ev.giant,
+      growth: ev.growth,
+      expanderLike: ev.expanderLike,
+      deg: ev.deg,
     };
   });
 }

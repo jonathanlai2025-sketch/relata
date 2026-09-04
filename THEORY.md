@@ -275,7 +275,7 @@ and only then
 
 Gravity would not be engagement pulling things together. It would be a macroscopic property of a relational substrate reorganizing under physical state.
 
-**Present status.** Ticket LOCALITY-EMERGENCE-01: \(\texttt{INSTRUMENT\_INVALID}\). Static random-regular failed persistence, so the run could not adjudicate the hypothesis. That is not FAIL of the physics. A higher level cannot rewrite a lower one. Levels 3–5 are not entitled to comment yet.
+**Present status.** Ticket LOCALITY-EMERGENCE-01: \(\texttt{NO PASS}\). Failed mechanisms remain FAIL. First-run static persistence: \(\texttt{INSTRUMENT\_INVALID}\). Levels 2–5 are LOCKED. Q and S cutoffs are uncalibrated; do not invent them.
 
 ---
 

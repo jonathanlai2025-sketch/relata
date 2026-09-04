@@ -151,6 +151,35 @@ export function LabView() {
           </div>
         )}
 
+        {lab.calibration.length > 0 && (
+          <div className="mt-6 overflow-x-auto rounded-xl border border-border">
+            <table className="w-full min-w-[28rem] text-left text-sm">
+              <thead>
+                <tr className="border-b border-border text-[11px] uppercase tracking-[0.12em] text-muted">
+                  <th className="px-3 py-2 font-medium">Control</th>
+                  <th className="px-3 py-2 font-medium">Role</th>
+                  <th className="px-3 py-2 font-medium">T persist</th>
+                  <th className="px-3 py-2 font-medium">C giant</th>
+                  <th className="px-3 py-2 font-medium">D_H</th>
+                  <th className="px-3 py-2 font-medium">Expander</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lab.calibration.map((r) => (
+                  <tr key={r.name} className="border-b border-border/70">
+                    <td className="px-3 py-2">{r.name}</td>
+                    <td className="px-3 py-2 text-xs text-muted">{r.role}</td>
+                    <td className="px-3 py-2 font-mono">{r.persist.toFixed(3)}</td>
+                    <td className="px-3 py-2 font-mono">{r.giant.toFixed(3)}</td>
+                    <td className="px-3 py-2 font-mono">{Number.isFinite(r.growth) ? r.growth.toFixed(2) : "—"}</td>
+                    <td className="px-3 py-2 text-xs text-muted">{r.expanderLike ? "yes" : "no"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         {lab.ablations.length > 0 && (
           <div className="mt-6 overflow-x-auto rounded-xl border border-border">
             <table className="w-full min-w-[28rem] text-left text-sm">
@@ -307,8 +336,11 @@ export function LabView() {
           <Button className="w-full" variant="secondary" onClick={() => lab.runAblations()} disabled={lab.busy}>
             {lab.busy ? "Ablating…" : "Run ablation suite"}
           </Button>
+          <Button className="w-full" variant="secondary" onClick={() => lab.runCalibration()} disabled={lab.busy}>
+            {lab.busy ? "Calibrating…" : "Calibrate instrument (controls only)"}
+          </Button>
           <p className="text-xs leading-5 text-muted">
-            Level 1 is the prize. It is not in hand. Ablations and 2-hop vs uniform are receipts, not gravity tests.
+            Do not freeze Q or S numbers to look good. Calibrate on known controls, freeze, then look at the candidate.
           </p>
         </div>
 

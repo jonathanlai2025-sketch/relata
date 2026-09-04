@@ -14,7 +14,7 @@ See [EXPERIMENT_ZERO.md](./EXPERIMENT_ZERO.md) and [THEORY.md](./THEORY.md).
 
 A YES does not derive gravity. The first run returned **NO** for this update class and this estimator — including the adaptive Hebb candidate and the static controls.
 
-**Present status.** Ticket `LOCALITY-EMERGENCE-01` = `INSTRUMENT_INVALID`. Static controls failed persistence, so the instrument could not adjudicate. Level 1 is the prize. It is not in hand. Levels 3–5 are not entitled to comment yet.
+**Present status.** Ticket `LOCALITY-EMERGENCE-01` = `NO PASS`. Failed mechanisms remain FAIL. First-run static persistence is `INSTRUMENT_INVALID`. Levels 2–5 are LOCKED. Level 1 is the prize. It is not in hand.
 
 See [LOCALITY-EMERGENCE-01.md](./LOCALITY-EMERGENCE-01.md).
 

@@ -1,5 +1,5 @@
 import { CIRCULARITY, LEDGER } from "@/lib/theory/ledger";
-import { FROZEN_TICKET, LEDGERS, SENTENCE, TICKET_ID } from "@/lib/ticket";
+import { FROZEN_TICKET, LEDGERS, LEVEL_LOCK, PROMOTION, SENTENCE, TICKET_ID } from "@/lib/ticket";
 import { cn } from "@/lib/utils";
 
 const SECTIONS = [
@@ -16,8 +16,8 @@ export function LedgerView() {
       <h1 className="mt-3 font-display text-4xl tracking-tight">What is closed, and what is not</h1>
       <p className="mt-4 max-w-2xl font-display text-xl leading-snug">{SENTENCE}</p>
       <p className="mt-4 max-w-2xl text-[17px] leading-8 text-foreground/90">
-        Three ledgers. Do not mix them. Ticket {TICKET_ID} current verdict:{" "}
-        <span className="text-destructive">{FROZEN_TICKET.verdict}</span>.
+        Three ledgers. Do not mix them. Ticket {TICKET_ID}:{" "}
+        <span className="text-destructive">NO PASS</span>. {PROMOTION}
       </p>
 
       <div className="mt-8 grid gap-3 md:grid-cols-3">
@@ -28,6 +28,18 @@ export function LedgerView() {
           </aside>
         ))}
       </div>
+
+      <ol className="mt-8 grid gap-2 sm:grid-cols-5">
+        {LEVEL_LOCK.map((lv) => (
+          <li key={lv.id} className="rounded-lg border border-border bg-card px-3 py-3">
+            <div className="font-mono text-[11px] text-muted">L{lv.id}</div>
+            <div className="mt-1 text-sm">{lv.title}</div>
+            <div className={cn("mt-2 text-[11px] uppercase tracking-[0.12em]", lv.state.startsWith("LOCKED") ? "text-muted" : "text-warn")}>
+              {lv.state}
+            </div>
+          </li>
+        ))}
+      </ol>
 
       <div className="mt-10 overflow-x-auto rounded-xl border border-border">
         <table className="w-full min-w-[28rem] text-left text-sm">

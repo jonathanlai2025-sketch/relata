@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { BOXED, CORRECTION, CURRENT, LEVELS, VALVE } from "@/lib/theory/stakes";
+import { BOXED, CORRECTION, CURRENT, VALVE } from "@/lib/theory/stakes";
 import { LEVEL1_PASS, RECEIPTS, SMUGGLING_AUDIT } from "@/lib/theory/receipts";
-import { SENTENCE } from "@/lib/ticket";
+import { CONJUNCTION, LEVEL_LOCK, PROMOTION, SENTENCE } from "@/lib/ticket";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -83,25 +83,25 @@ export function StakesView() {
       </p>
 
       <ol className="mt-10 space-y-4">
-        {LEVELS.map((lv) => (
+        {LEVEL_LOCK.map((lv) => (
           <li key={lv.id} className="rounded-xl border border-border bg-card p-4 sm:p-5">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
                 Level {lv.id}
               </div>
-              <div className="text-[11px] uppercase tracking-[0.12em] text-warn">Unearned</div>
+              <div className={cn("text-[11px] uppercase tracking-[0.12em]", lv.state.startsWith("LOCKED") ? "text-muted" : "text-warn")}>
+                {lv.state}
+              </div>
             </div>
             <h2 className="mt-2 font-display text-2xl tracking-tight">{lv.title}</h2>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{lv.body}</p>
-            <p className="mt-2 text-sm leading-6 text-muted">{lv.means}</p>
           </li>
         ))}
       </ol>
 
       <p className="mt-10 text-[15px] leading-7 text-muted">
-        The gap from Level 1 to Level 5 is not small. Causal sets, CDT, and tensor models have spent
-        years on 1→3 without reaching 5. A green Level 1 is already a result. It does not purchase
-        the rungs above it.
+        {CONJUNCTION}. {PROMOTION} No weighted score. No majority vote. No “promising.” No rescuing
+        a failed gate with a beautiful phase diagram. Q and S cutoffs are uncalibrated; inventing
+        0.80 would be statistical smuggling.
       </p>
 
       <div className="mt-8 flex flex-wrap gap-3">

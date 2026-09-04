@@ -4,6 +4,7 @@ import {
   PROTOCOL,
   ZeroSession,
   runAblationSuite,
+  runInstrumentCalibration,
   type EnsembleId,
   type EnsembleReport,
   type Params,
@@ -42,6 +43,7 @@ type LabState = {
   sweep: SweepRow[];
   sweepNotes: ReturnType<typeof summarizeSweep>;
   ablations: ReturnType<typeof runAblationSuite>;
+  calibration: ReturnType<typeof runInstrumentCalibration>;
   ticket: TicketResult;
   busy: boolean;
   log: string[];
@@ -55,6 +57,7 @@ type LabState = {
   runProtocol: () => void;
   runSweep: () => void;
   runAblations: () => void;
+  runCalibration: () => void;
   setView: (v: "graph" | "matrix") => void;
 };
 
@@ -81,6 +84,7 @@ export const useLab = create<LabState>((set, get) => ({
   sweep: [],
   sweepNotes: [],
   ablations: [],
+  calibration: [],
   ticket: FROZEN_TICKET,
   busy: false,
   log: [
@@ -168,6 +172,7 @@ export const useLab = create<LabState>((set, get) => ({
       scalingRun: false,
       replicationRun: false,
       usingTwoHopProposal: false,
+      qThresholdFrozen: false,
     });
     lines.push(`${ticket.id} verdict: ${ticket.verdict}. ${ticket.reasons[0] ?? ""}`);
     set({
@@ -206,6 +211,20 @@ export const useLab = create<LabState>((set, get) => ({
     }
     lines.push("There is no green phase to protect. Ablations are registered for when there is.");
     set({ busy: false, ablations: rows, log: [...get().log, ...lines] });
+  },
+  runCalibration: () => {
+    set({ busy: true, running: false });
+    const rows = runInstrumentCalibration({ ...get().params, n: Math.min(20, get().params.n), trials: 10 });
+    const lines = [
+      "Instrument calibration on known controls only. Candidate not inspected.",
+      "A naive M threshold is not expected to separate cycle from random-regular. Do not freeze Q from wishful numbers.",
+    ];
+    for (const r of rows) {
+      lines.push(
+        `${r.name} (${r.role}): persist=${r.persist.toFixed(3)} giant=${r.giant.toFixed(3)} D_H=${Number.isFinite(r.growth) ? r.growth.toFixed(2) : "na"} expander=${r.expanderLike}`,
+      );
+    }
+    set({ busy: false, calibration: rows, log: [...get().log, ...lines] });
   },
   setView: (v) => set({ view: v }),
 }));
