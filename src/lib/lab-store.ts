@@ -3,6 +3,7 @@ import {
   ENSEMBLE_META,
   PROTOCOL,
   ZeroSession,
+  runAblationSuite,
   type EnsembleId,
   type EnsembleReport,
   type Params,
@@ -39,6 +40,7 @@ type LabState = {
   reports: EnsembleReport[];
   sweep: SweepRow[];
   sweepNotes: ReturnType<typeof summarizeSweep>;
+  ablations: ReturnType<typeof runAblationSuite>;
   busy: boolean;
   log: string[];
   init: () => void;
@@ -50,6 +52,7 @@ type LabState = {
   runZero: () => void;
   runProtocol: () => void;
   runSweep: () => void;
+  runAblations: () => void;
   setView: (v: "graph" | "matrix") => void;
 };
 
@@ -75,6 +78,7 @@ export const useLab = create<LabState>((set, get) => ({
   reports: [],
   sweep: [],
   sweepNotes: [],
+  ablations: [],
   busy: false,
   log: [
     "Frozen protocol loaded. First-run result: no ensemble passed Experiment Zero.",
@@ -176,6 +180,18 @@ export const useLab = create<LabState>((set, get) => ({
       sweepNotes: notes,
       log: [...get().log, ...lines],
     });
+  },
+  runAblations: () => {
+    set({ busy: true, running: false });
+    const rows = runAblationSuite({ ...get().params, n: Math.min(20, get().params.n), steps: 16, trials: 8 });
+    const lines = ["Ablation suite. If a phase existed, killing the load-bearing piece should collapse it."];
+    for (const r of rows) {
+      lines.push(
+        `${r.name}: G1=${r.g1} G3=${r.g3} G4=${r.g4} G6=${r.g6} expander=${r.expanderLike} → ${r.passZero ? "locality" : "NO"}`,
+      );
+    }
+    lines.push("There is no green phase to protect. Ablations are registered for when there is.");
+    set({ busy: false, ablations: rows, log: [...get().log, ...lines] });
   },
   setView: (v) => set({ view: v }),
 }));

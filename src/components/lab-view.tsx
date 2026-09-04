@@ -151,6 +151,37 @@ export function LabView() {
           </div>
         )}
 
+        {lab.ablations.length > 0 && (
+          <div className="mt-6 overflow-x-auto rounded-xl border border-border">
+            <table className="w-full min-w-[28rem] text-left text-sm">
+              <thead>
+                <tr className="border-b border-border text-[11px] uppercase tracking-[0.12em] text-muted">
+                  <th className="px-3 py-2 font-medium">Ablation</th>
+                  <th className="px-3 py-2 font-medium">G1</th>
+                  <th className="px-3 py-2 font-medium">G3</th>
+                  <th className="px-3 py-2 font-medium">G4</th>
+                  <th className="px-3 py-2 font-medium">Expander</th>
+                  <th className="px-3 py-2 font-medium">Zero</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lab.ablations.map((r) => (
+                  <tr key={r.ablation} className="border-b border-border/70">
+                    <td className="px-3 py-2">{r.name}</td>
+                    <Cell ok={r.g1} />
+                    <Cell ok={r.g3} />
+                    <Cell ok={r.g4} />
+                    <td className="px-3 py-2 text-xs text-muted">{r.expanderLike ? "yes" : "no"}</td>
+                    <td className={cn("px-3 py-2 text-xs uppercase tracking-[0.12em]", r.passZero ? "text-ok" : "text-destructive")}>
+                      {r.passZero ? "locality" : "NO"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         {lab.sweepNotes.length > 0 && (
           <div className="mt-6 overflow-x-auto rounded-xl border border-border">
             <table className="w-full min-w-[28rem] text-left text-sm">
@@ -273,8 +304,11 @@ export function LabView() {
           <Button className="w-full" variant="secondary" onClick={() => lab.runSweep()} disabled={lab.busy}>
             {lab.busy ? "Sweeping…" : "Sweep proposal kernels"}
           </Button>
+          <Button className="w-full" variant="secondary" onClick={() => lab.runAblations()} disabled={lab.busy}>
+            {lab.busy ? "Ablating…" : "Run ablation suite"}
+          </Button>
           <p className="text-xs leading-5 text-muted">
-            Sweep: uniform vs 2-hop at γ=0 and γ=1. If 2-hop is local at γ=0, the archive inserted the geometry.
+            Level 1 is the prize. It is not in hand. Ablations and 2-hop vs uniform are receipts, not gravity tests.
           </p>
         </div>
 

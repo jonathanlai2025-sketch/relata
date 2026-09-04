@@ -19,6 +19,7 @@ export type Params = {
   theta: number;
   persistWindow: number;
   seed: number;
+  ablation?: "none" | "no_hebb" | "no_capacity" | "shuffle";
 };
 
 export const PROTOCOL: Params = {
@@ -84,7 +85,7 @@ export const GATE_DETAIL: Record<GateKey, { id: string; name: string; detail: st
   G2_probe_invariance: {
     id: "G2",
     name: "Probe invariance",
-    detail: "Neighborhoods are reconstructed from M. No coordinate chart is used.",
+    detail: "Directed neighborhoods from M are reciprocal; growth does not depend on which node is the probe.",
   },
   G3_persistence: {
     id: "G3",
@@ -122,6 +123,9 @@ export type EnsembleReport = {
   passZero: boolean;
   passGeometryHint: boolean;
   meanM: number;
+  secondProbe?: number;
+  expanderLike?: boolean;
+  reciprocity?: number;
 };
 
 export const FROZEN_FIRST_RUN: Record<
@@ -304,8 +308,9 @@ function updateCouplings(w: Float64Array, n: number, states: Float64Array, sampl
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < n; j++) {
       if (i === j) continue;
-      const c = Math.max(corr[i * n + j]! / den, 0);
-      let v = (1 - p.decay) * at(w, n, i, j) + p.hebb * c + p.noise * rng.normal();
+      const c = p.ablation === "no_hebb" ? 0 : Math.max(corr[i * n + j]! / den, 0);
+      const hebb = p.ablation === "no_hebb" ? 0 : p.hebb;
+      let v = (1 - p.decay) * at(w, n, i, j) + hebb * c + p.noise * rng.normal();
       if (v < 0) v = 0;
       set(next, n, i, j, v);
     }
@@ -317,7 +322,29 @@ function updateCouplings(w: Float64Array, n: number, states: Float64Array, sampl
       set(next, n, j, i, v);
     }
   }
-  return softmaxRows(next, n, p.capacity);
+  if (p.ablation === "no_capacity") return next;
+  let out = softmaxRows(next, n, p.capacity);
+  if (p.ablation === "shuffle") out = shufflePartners(out, n, rng);
+  return out;
+}
+
+function shufflePartners(w: Float64Array, n: number, rng: Rng) {
+  const perm = rng.permutation(n);
+  const out = zeros(n);
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      if (i === j) continue;
+      set(out, n, i, j, at(w, n, perm[i]!, perm[j]!));
+    }
+  }
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      const v = 0.5 * (at(out, n, i, j) + at(out, n, j, i));
+      set(out, n, i, j, v);
+      set(out, n, j, i, v);
+    }
+  }
+  return out;
 }
 
 function influenceMatrix(w: Float64Array, n: number, p: Params, rng: Rng) {
@@ -537,12 +564,115 @@ function jaccard(a: Uint8Array, b: Uint8Array) {
   return union === 0 ? 0 : inter / union;
 }
 
-function evaluate(mHist: Float64Array[], n: number, p: Params, rng: Rng) {
+function polyVsExp(vol: Float64Array) {
+  const rs: number[] = [];
+  const ys: number[] = [];
+  const last = vol[vol.length - 1]!;
+  for (let r = 1; r < vol.length; r++) {
+    const v = vol[r]!;
+    if (v > 1.2 && v < 0.85 * last) {
+      rs.push(r);
+      ys.push(Math.log(Math.max(v, 1e-9)));
+    }
+  }
+  if (rs.length < 3) return { poly: Number.NaN, exp: Number.NaN, expanderLike: true };
+  const logR = rs.map((r) => Math.log(r));
+  const poly = r2(logR, ys);
+  const exp = r2(rs, ys);
+  return { poly, exp, expanderLike: !(poly > exp + 0.04) };
+}
+
+function r2(xs: number[], ys: number[]) {
+  const m = slope(xs, ys);
+  if (!Number.isFinite(m)) return Number.NaN;
+  const xbar = xs.reduce((s, x) => s + x, 0) / xs.length;
+  const ybar = ys.reduce((s, y) => s + y, 0) / ys.length;
+  const b = ybar - m * xbar;
+  let ssTot = 0;
+  let ssRes = 0;
+  for (let i = 0; i < xs.length; i++) {
+    const pred = m * xs[i]! + b;
+    ssRes += (ys[i]! - pred) ** 2;
+    ssTot += (ys[i]! - ybar) ** 2;
+  }
+  return ssTot <= 1e-12 ? 1 : 1 - ssRes / ssTot;
+}
+
+function probeStats(m: Float64Array, n: number, theta: number) {
+  const recs: number[] = [];
+  const vols: number[] = [];
+  for (let i = 0; i < n; i++) {
+    const out: number[] = [];
+    const inn: number[] = [];
+    for (let j = 0; j < n; j++) {
+      if (i === j) continue;
+      if (m[i * n + j]! >= theta) out.push(j);
+      if (m[j * n + i]! >= theta) inn.push(j);
+    }
+    const a = new Set(out);
+    const b = new Set(inn);
+    let inter = 0;
+    for (const x of a) if (b.has(x)) inter++;
+    const uni = a.size + b.size - inter;
+    recs.push(uni ? inter / uni : 1);
+    vols.push(out.length + 1);
+  }
+  recs.sort((x, y) => x - y);
+  const rec = recs[Math.floor(recs.length / 2)] ?? 0;
+  const mean = vols.reduce((s, v) => s + v, 0) / Math.max(vols.length, 1);
+  const var_ = vols.reduce((s, v) => s + (v - mean) ** 2, 0) / Math.max(vols.length, 1);
+  const cv = mean > 0 ? Math.sqrt(var_) / mean : 1;
+  return { reciprocity: rec, growthCV: cv };
+}
+
+function corrFromStates(states: Float64Array, samples: number, n: number) {
+  const c = new Float64Array(n * n);
+  const mean = new Float64Array(n);
+  for (let t = 0; t < samples; t++) {
+    for (let i = 0; i < n; i++) mean[i]! += states[t * n + i]!;
+  }
+  for (let i = 0; i < n; i++) mean[i]! /= Math.max(samples, 1);
+  for (let t = 0; t < samples; t++) {
+    for (let i = 0; i < n; i++) {
+      const xi = states[t * n + i]! - mean[i]!;
+      for (let j = 0; j < n; j++) {
+        const xj = states[t * n + j]! - mean[j]!;
+        c[i * n + j]! += xi * xj;
+      }
+    }
+  }
+  const den = Math.max(samples - 1, 1);
+  for (let i = 0; i < n * n; i++) c[i]! /= den;
+  for (let i = 0; i < n; i++) c[i * n + i] = 0;
+  return c;
+}
+
+function absJaccard(a: Float64Array, b: Float64Array, n: number, thetaA: number, thetaB: number) {
+  let inter = 0;
+  let union = 0;
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      const x = Math.abs(a[i * n + j]!) >= thetaA;
+      const y = Math.abs(b[i * n + j]!) >= thetaB;
+      if (x || y) union++;
+      if (x && y) inter++;
+    }
+  }
+  return union ? inter / union : 0;
+}
+
+function medianAbs(mat: Float64Array) {
+  const v = Array.from(mat).map((x) => Math.abs(x)).sort((a, b) => a - b);
+  return v[Math.floor(v.length / 2)] ?? 0;
+}
+
+function evaluate(mHist: Float64Array[], n: number, p: Params, rng: Rng, corr?: Float64Array) {
   const m = mHist[mHist.length - 1]!;
   const adj = thresholdGraph(m, n, p.theta);
   const vol = volumeGrowth(adj, n);
   const growth = fitGrowth(vol);
   const spec = spectralDim(adj, n);
+  const fit = polyVsExp(vol);
   let persist = 0;
   if (mHist.length > p.persistWindow) {
     const a = thresholdGraph(mHist[mHist.length - 1]!, n, p.theta);
@@ -552,11 +682,21 @@ function evaluate(mHist: Float64Array[], n: number, p: Params, rng: Rng) {
   const deg = meanDegree(adj, n);
   const giant = giantFraction(adj, n);
   const tri = triangleHold(m, n, rng);
+  const probe = probeStats(m, n, p.theta);
   const vol1 = vol.length > 1 ? vol[1]! : n;
+  let second = 0;
+  if (corr) {
+    second = absJaccard(m, corr, n, p.theta, Math.max(1e-4, 0.5 * medianAbs(corr)));
+  }
   const g1 = giant >= 0.8;
-  const g2 = true;
+  const g2 = probe.reciprocity >= 0.45 && probe.growthCV <= 0.55;
   const g3 = persist >= 0.35;
-  const g4 = vol1 < 0.55 * n && !Number.isNaN(growth) && growth >= 0.6 && growth <= 4.8;
+  const g4 =
+    vol1 < 0.55 * n &&
+    !Number.isNaN(growth) &&
+    growth >= 0.6 &&
+    growth <= 4.8 &&
+    !fit.expanderLike;
   const g5 = tri >= 0.7;
   const g6 = deg >= 2 && deg <= 0.45 * (p.n - 1);
   const gates: Record<GateKey, boolean> = {
@@ -580,6 +720,11 @@ function evaluate(mHist: Float64Array[], n: number, p: Params, rng: Rng) {
     passGeometryHint: g1 && g2 && g3 && g4 && g5 && g6,
     adj,
     m,
+    probe,
+    secondProbe: second,
+    expanderLike: fit.expanderLike,
+    r2poly: fit.poly,
+    r2exp: fit.exp,
   };
 }
 
@@ -640,16 +785,19 @@ export class ZeroSession {
     this.stepCount = 0;
     this.w = seedW(this.ensemble, params, this.rng);
     const mid = Math.floor(params.steps / 2);
+    let lastStates: Float64Array | null = null;
     for (let t = 0; t < params.steps; t++) {
       const states = sampleStates(this.w, n, params.samples, this.rng);
-      if (adaptive) this.w = updateCouplings(this.w, n, states, params.samples, params, this.rng);
+      lastStates = states;
+      if (adaptive || params.ablation) this.w = updateCouplings(this.w, n, states, params.samples, params, this.rng);
       this.stepCount++;
       if (t === mid || t === params.steps - 1) {
         this.mHist.push(influenceMatrix(this.w, n, params, this.rng));
       }
     }
     this.m = this.mHist[this.mHist.length - 1] ?? null;
-    const ev = evaluate(this.mHist, n, params, this.rng);
+    const corr = lastStates ? corrFromStates(lastStates, params.samples, n) : undefined;
+    const ev = evaluate(this.mHist, n, params, this.rng, corr);
     this.adj = ev.adj;
     let meanM = 0;
     if (this.m) {
@@ -670,6 +818,9 @@ export class ZeroSession {
       passZero: ev.passZero,
       passGeometryHint: ev.passGeometryHint,
       meanM,
+      secondProbe: ev.secondProbe,
+      expanderLike: ev.expanderLike,
+      reciprocity: ev.probe.reciprocity,
     };
     for (let k = 0; k < 50; k++) this.relax(0.08);
     return this.report;
@@ -752,4 +903,35 @@ export function diagnoseFrozenCoupling(w: Float64Array, p: Params, seed: number)
   const m0 = influenceMatrix(w, n, p, rng);
   const m1 = influenceMatrix(w, n, p, rng);
   return evaluate([m0, m1], n, p, rng);
+}
+
+export type AblationKind = "none" | "no_hebb" | "no_capacity" | "shuffle";
+
+export const ABLATION_META: Record<AblationKind, { name: string; expect: string }> = {
+  none: { name: "Baseline adaptive", expect: "Candidate. Currently NO." },
+  no_hebb: { name: "Ablate joint statistics", expect: "If a phase existed, it should collapse." },
+  no_capacity: { name: "Ablate capacity bound", expect: "If capacity was load-bearing, mean-field returns." },
+  shuffle: { name: "Shuffle partners each step", expect: "If persistent partners were load-bearing, locality dies." },
+};
+
+export function runAblationSuite(p: Params = { ...PROTOCOL, n: 20, steps: 16, trials: 8 }) {
+  const kinds: AblationKind[] = ["none", "no_hebb", "no_capacity", "shuffle"];
+  return kinds.map((ablation) => {
+    const sess = new ZeroSession("adaptive_capacity", {
+      ...p,
+      ablation: ablation === "none" ? undefined : ablation,
+    });
+    const r = sess.runFull();
+    return {
+      ablation,
+      name: ABLATION_META[ablation].name,
+      passZero: r.passZero,
+      g1: r.gates.G1_connected,
+      g3: r.gates.G3_persistence,
+      g4: r.gates.G4_finite_dimensional_growth,
+      g6: r.gates.G6_nondegeneracy,
+      expanderLike: r.expanderLike ?? true,
+      secondProbe: r.secondProbe ?? 0,
+    };
+  });
 }

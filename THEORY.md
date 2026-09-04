@@ -275,7 +275,7 @@ and only then
 
 Gravity would not be engagement pulling things together. It would be a macroscopic property of a relational substrate reorganizing under physical state.
 
-**Present status.** \(\text{LOCALITY\_EMERGENCE}=\text{FAIL}\). Receipts: first-run Ising NO; G3 fails on static controls; 2-hop proposals insert locality. Look for a green Level 1 with receipts that it was not embedded, tuned, or measurement-dependent. Then attack it. Do not skip to Level 5.
+**Present status.** \(\text{LOCALITY\_EMERGENCE}=\text{FAIL}\). Receipts: first-run Ising NO; G3 fails on static controls; 2-hop proposals insert locality. A higher level cannot rewrite a lower one. Levels 3–5 are not entitled to comment yet. Look for a green Level 1 with R1–R6 at once. Then attack it. Do not skip to Level 5.
 
 ---
 

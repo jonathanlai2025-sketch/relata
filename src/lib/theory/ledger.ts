@@ -44,7 +44,12 @@ export const LEDGER = {
     {
       id: "e8",
       title: "Stakes of a genuine Zero pass",
-      body: "If Experiment Zero survived controls, ablations, scaling, probes, and replication, that would be LOCALITY_EMERGENCE = PASS — evidence that distance-like structure can appear from relationships without a metric. Gravity would remain Levels 3–5 above that. Present status: FAIL.",
+      body: "If Experiment Zero survived the Level 1 receipts, that would be LOCALITY_EMERGENCE = PASS. Gravity would remain Levels 3–5 above that. Present status: FAIL.",
+    },
+    {
+      id: "e9",
+      title: "One-way valve and Level 1 receipts",
+      body: "Higher levels cannot rewrite lower ones. LOCALITY_EMERGENCE = PASS requires no-smuggling, intervention plus independent probe, controls that fail differently, load-bearing ablations, finite-size scaling, and replication — at once. Presently FAIL. Levels 3–5 are not entitled to comment.",
     },
   ] as LedgerItem[],
   postulates: [

@@ -142,5 +142,26 @@ First sweep (N=24, 3 seeds). 2-section clustering:
 
 2-hop at γ=0 is already more clustered than honest uniform at γ=1. Locality was inserted by the proposal. The action is not licensed.
 
----
+## Receipts required before LOCALITY_EMERGENCE = PASS
+
+A pass that cannot be attacked is not a pass. Level 1 needs all of these at once. A higher level cannot rewrite a lower one.
+
+1. **No smuggling.** No coordinates, target dimension, inverse-distance kernel, or planted lattice in RNG, init, or update. 2-hop proposal pools are smuggling.
+2. **Intervention, not vibe.** Neighborhoods from \(M_{i\to j}\). An independent probe (correlation vs \(M\)) agrees above a pre-registered overlap. Probe invariance is reciprocity and growth-CV across sources — not a tautology.
+3. **Controls fail differently.** Mean-field stays mean-field. Expander / random-regular do not fake polynomial volume (\(R^2_{\mathrm{poly}} > R^2_{\mathrm{exp}}\)). Frozen skeletons do not automatically persist.
+4. **Ablations hurt the right things.** Remove capacity, remove joint-statistic update, shuffle partners each step. If the pattern survives the load-bearing cut, the cause was misidentified.
+5. **Finite-size scaling.** Parameter-region area does not shrink to a point as \(N\) grows. Ball-growth and spectral \(D_{\mathrm{eff}}\) may disagree; both must stabilize.
+6. **Replication.** Different seed, different implementation, same gates.
+
+Until those receipts exist, “distance appeared anyway” is a sentence, not a result.
+
+G2 is no longer hardcoded true. G4 now requires polynomial volume to beat exponential volume on \(R^2\).
+
+## What to do next if continuing
+
+1. Raise intervention trials until static controls pass G3.
+2. Only then compare adaptive dynamics against those controls.
+3. If adaptive still matches mean-field, abandon this update rule.
+4. If adaptive passes G1–G6 and controls do not pass the same pattern, run ablations and finite-size scaling.
+5. Only then is LOCALITY_EMERGENCE a candidate. Still not gravity.
 
